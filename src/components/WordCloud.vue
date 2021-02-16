@@ -4,6 +4,24 @@
       <div class="column center vw45">
         <h1>Générateur de nuages de mots</h1>
         <textarea v-model="text" name="text" id="text"></textarea>
+        <v-container class="px-0" fluid>
+          <v-switch
+            v-model="switch1"
+            :label="`Switch 1: ${switch1.toString()}`"
+            color="blue"
+          ></v-switch>
+          <v-slider
+            v-model="ex3.val"
+            :label="ex3.label"
+            :thumb-color="ex3.color"
+            thumb-label="always"
+            :min="ex3.min"
+            :max="ex3.max"
+            ticks="always"
+            step="1"
+          ></v-slider>
+        </v-container>
+        <Slider orientation='horizontal'/>
         <button @click="generate()">Génerer</button>
       </div>
       <div>
@@ -16,13 +34,24 @@
   </div>
 </template>
 
+
 <script>
-import WordCloud from 'wordcloud'
+import WordCloud from "wordcloud";
+
+
 export default {
   data() {
     return {
       text: "tototoot",
-      wordcloud: WordCloud
+      wordcloud: WordCloud,
+      switch1: false,
+      ex3: {
+        label: "color",
+        val: 5,
+        color: "orange darken-3",
+        min: 0,
+        max: 30,
+      },
     };
   },
   methods: {
@@ -73,7 +102,7 @@ export default {
         "avec",
         "par",
         "hui",
-        "aujourd"
+        "aujourd",
       ];
       const pronomsPerso = [
         "je",
@@ -157,25 +186,24 @@ export default {
         maxRotation: 0.2,
         rotateRatio: 0.8,
         drawOutOfBound: true,
-        shape: 'cardioid',
+        shape: "cardioid",
         color: function () {
           return ["#d50000", "#002171", "#0d47a1"][
             Math.floor(Math.random() * 3)
           ];
-        }
+        },
       };
       this.wordcloud(document.getElementById("wordcloud"), options);
       setTimeout(() => {
         this.wordcloud(document.getElementById("canvas"), options);
-      }, 1000)
-
+      }, 1000);
     },
     createList(wordsArray, limitNumber) {
       let list = [];
       // Populate array
       wordsArray.forEach((word) => {
         const indexOfItem = this.isInList(list, word);
-        if (indexOfItem <= 0) {
+        if (indexOfItem < 0) {
           list.push([word, 1]);
         } else {
           list[indexOfItem][1] += 1;
@@ -207,13 +235,14 @@ export default {
     },
     listConverter(list, fontSizeTarget) {
       const minOccurence = list[list.length - 1][1];
-      const minTempOutput = Math.log(minOccurence + 1) * Math.log(minOccurence + 1);
+      const minTempOutput =
+        Math.log(minOccurence + 1) * Math.log(minOccurence + 1);
       const convertedList = JSON.parse(JSON.stringify(list)); // Le spread opérator [...list] ne marche qu'avec un array simple
       const divider = minTempOutput / fontSizeTarget;
       convertedList.forEach((item) => {
         //item[1] = item[1] / divider
-        console.log(Math.log(item[1]))
-        item[1] = Math.log(item[1]) * Math.log(item[1]) / divider;
+        console.log(Math.log(item[1]));
+        item[1] = (Math.log(item[1]) * Math.log(item[1])) / divider;
       });
       return convertedList;
     },
@@ -226,7 +255,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap");
 * {
   box-sizing: border-box;
 }
