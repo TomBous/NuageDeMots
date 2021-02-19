@@ -1,59 +1,113 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="column center vw45">
-        <h1>Générateur de nuages de mots</h1>
-        <textarea v-model="text" name="text" id="text"></textarea>
-        <v-container class="px-0" fluid>
+  <v-container fluid>
+    <v-row style="large">
+      <v-col cols="4" sm="4">
+        <v-textarea
+          solo
+          name="text"
+          v-model="text"
+          placeholder="Votre texte ici"
+        ></v-textarea>
+        <h2>Mots à retirer</h2>
+        <v-row>
+        <v-col>
           <v-switch
-            v-model="switch1"
-            :label="`Switch 1: ${switch1.toString()}`"
-            color="blue"
+            v-model="filterPronoms"
+            :label="'Pronoms personnels'"
+            color="cyan darken-1"
           ></v-switch>
-          <v-slider
-            v-model="ex3.val"
-            :label="ex3.label"
-            :thumb-color="ex3.color"
-            thumb-label="always"
-            :min="ex3.min"
-            :max="ex3.max"
-            ticks="always"
-            step="1"
-          ></v-slider>
-        </v-container>
-        <Slider orientation='horizontal'/>
-        <button @click="generate()">Génerer</button>
-      </div>
-      <div>
+          <v-switch
+            v-model="filterPossessifs"
+            :label="'Pronoms possessifs'"
+            color="cyan darken-1"
+          ></v-switch>
+        </v-col>
+        <v-col>
+          <v-switch
+            v-model="filterVerbAux"
+            :label="'Verbes auxiliaires'"
+            color="cyan darken-1"
+          ></v-switch>
+          <v-switch
+            v-model="filterDeterminants"
+            :label="'Déterminants'"
+            color="cyan darken-1"
+          ></v-switch>
+        </v-col>
+        </v-row>
+        <h2>Configuration</h2>
+        <v-slider
+          v-model="zoom.val"
+          :label="zoom.label"
+          :thumb-color="zoom.color"
+          thumb-label="always"
+          :min="zoom.min"
+          :max="zoom.max"
+          ticks="always"
+          step="1"
+        ></v-slider>
+        <v-slider
+          v-model="nbWord.val"
+          :label="nbWord.label"
+          :thumb-color="nbWord.color"
+          thumb-label="always"
+          :min="nbWord.min"
+          :max="nbWord.max"
+          ticks="always"
+          step="5"
+        ></v-slider>
+        <v-btn @click="generate()" color="cyan darken-1" elevation="2" dark
+          >Génerer</v-btn
+        >
+        <v-btn
+          @click="downloadCanvas()"
+          color="cyan darken-1"
+          elevation="2"
+          dark
+          >Enregistrer</v-btn
+        >
+      </v-col>
+
+      <v-col cols="8" sm="8">
         <div class="container column center">
           <div id="wordcloud"></div>
-          <canvas id="canvas" width="600" height="400"></canvas>
+          <canvas id="canvas" width="1024" height="600"></canvas>
         </div>
-      </div>
-    </div>
-  </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 
 <script>
 import WordCloud from "wordcloud";
 
-
 export default {
   data() {
     return {
-      text: "tototoot",
+      text: "",
       wordcloud: WordCloud,
-      switch1: false,
-      ex3: {
-        label: "color",
-        val: 5,
-        color: "orange darken-3",
+      filterPronoms: true,
+      filterVerbAux: true,
+      filterDeterminants: true,
+      filterPossessifs: true,
+      zoom: {
+        label: "Zoom",
+        val: 3,
+        color: "cyan darken-1",
         min: 0,
-        max: 30,
+        max: 10,
+      },
+      nbWord: {
+        label: "Nombre de mots",
+        val: 40,
+        color: "cyan darken-1",
+        min: 10,
+        max: 60,
       },
     };
   },
+  mounted() {},
   methods: {
     generate() {
       const string = this.text;
@@ -133,7 +187,7 @@ export default {
         "êtes",
         "sont",
       ];
-      /* const pronomsPossessif = [
+      const pronomsPossessif = [
         "mien",
         "tien",
         "siens",
@@ -146,7 +200,7 @@ export default {
         "vôtre",
         "nôtre",
         "votre",
-      ]; */
+      ];
       const determinants = [
         "le",
         "la",
@@ -163,14 +217,31 @@ export default {
         "quelle",
         "quelles",
       ];
-
-      const importantWords = longWords
-        .filter((word) => !motsInutiles.includes(word))
-        .filter((word) => !pronomsPerso.includes(word))
-        .filter((word) => !verbesAxiliaire.includes(word))
-        .filter((word) => !determinants.includes(word)); // N'est pas dans mot motsInutiles
+      let importantWords = longWords.filter(
+        (word) => !motsInutiles.includes(word)
+      );
+      if (this.filterPronoms) {
+        importantWords = importantWords.filter(
+          (word) => !pronomsPerso.includes(word)
+        );
+      }
+      if (this.filterVerbAux) {
+        importantWords = importantWords.filter(
+          (word) => !verbesAxiliaire.includes(word)
+        );
+      }
+      if (this.filterDeterminants) {
+        importantWords = importantWords.filter(
+          (word) => !determinants.includes(word)
+        ); // N'est pas dans mot motsInutiles
+      }
+      if (this.filterPossessifs) {
+        importantWords = importantWords.filter(
+          (word) => !pronomsPossessif.includes(word)
+        );
+      }
       console.log(importantWords);
-      const list = this.createList(importantWords, 40);
+      const list = this.createList(importantWords, this.nbWord.val);
       let convertedList = this.listConverter(list, 10);
       console.log("Occurences : ", list);
       console.log("Converted : ", convertedList);
@@ -178,9 +249,10 @@ export default {
         list: convertedList,
         fontFamily: "Caveat",
         //fontWeight: 400,
-        gridSize: 10,
+        gridSize: Math.round((16 * 700) / 1024),
         minSize: 1,
-        weightFactor: 2,
+        weightFactor: this.zoom.val,
+        origin: [1024 / 2, 600 / 4.5],
         backgroundColor: "white",
         minRotation: -0.2,
         maxRotation: 0.2,
@@ -235,19 +307,33 @@ export default {
     },
     listConverter(list, fontSizeTarget) {
       const minOccurence = list[list.length - 1][1];
-      const minTempOutput =
+      const FutureMinOutput =
         Math.log(minOccurence + 1) * Math.log(minOccurence + 1);
       const convertedList = JSON.parse(JSON.stringify(list)); // Le spread opérator [...list] ne marche qu'avec un array simple
-      const divider = minTempOutput / fontSizeTarget;
+      const divider = FutureMinOutput / fontSizeTarget; // On fixe la taille de l'occurence min
       convertedList.forEach((item) => {
-        //item[1] = item[1] / divider
-        console.log(Math.log(item[1]));
         item[1] = (Math.log(item[1]) * Math.log(item[1])) / divider;
       });
       return convertedList;
     },
     isInList(list, word) {
       return list.findIndex((item) => item[0] == word);
+    },
+    downloadCanvas() {
+      var canvas = document.getElementById("canvas");
+      canvas.toBlob((blob) => {
+        const downloadUrl = URL.createObjectURL(blob);
+        this.download("image.png", downloadUrl);
+      });
+    },
+    download(filename, downloadUrl) {
+      var element = document.createElement("a");
+      element.setAttribute("href", downloadUrl);
+      element.setAttribute("download", filename);
+      element.style.display = "none";
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
     },
   },
 };
@@ -273,39 +359,33 @@ li {
 a {
   color: #42b983;
 }
-textarea {
-  width: 40vw;
-  height: 20vh;
-  border-radius: 10px;
-  border: 2px solid #d9d9d9;
-  padding: 0.5em;
-}
+
 canvas {
-  width: 600px;
-  height: 400px;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  margin-right: auto;
+  margin-left: auto;
 }
 button {
   margin: 20px 10px;
 }
 #wordcloud {
-  width: 600px;
-  height: 400px;
+  position: relative;
+  width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 600px;
 }
-.row {
+.large {
+  width: 90vw;
+}
+.flex {
   display: flex;
-  flex-flow: row wrap;
-}
-.column {
-  display: flex;
-  flex-flow: column wrap;
-}
-.center {
+  flex-flow: row column;
   align-items: center;
 }
-.container {
-  width: 50vw;
-}
-.vw45 {
-  width: 45vw;
+.margin-slider {
+  margin-right: 10%;
 }
 </style>
