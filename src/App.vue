@@ -1,10 +1,11 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="app">
     <v-app-bar
       app
       color="blue-grey darken-4"
       elevation="1"
       dark
+      width="100vw"
     >
     <v-app-bar-title width="320">Générateur de nuages de mots</v-app-bar-title>
       <!-- <v-avatar
@@ -51,3 +52,9 @@ import WordCloud from './components/WordCloud.vue'
     }),
   }
 </script>
+
+<style scoped>
+#app {
+  width: 100vw;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row style="large">
-      <v-col cols="4" lg="4" sm="12">
+      <v-col lg="4" xs="12" sm="12" md="12">
         <h2>Texte</h2>
         <v-textarea
           solo
@@ -157,7 +157,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="8" lg="8" sm="12">
+      <v-col lg="8" xs="12" sm="12" md="12">
         <div class="container column center">
           <div id="wordcloud"></div>
           <canvas id="canvas" width="1024" height="600"></canvas>
@@ -533,4 +533,5 @@ button {
   width: 33%;
   min-width: 140px;
 }
+
 </style>
