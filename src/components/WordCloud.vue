@@ -10,30 +10,30 @@
         ></v-textarea>
         <h2>Mots à retirer</h2>
         <v-row>
-        <v-col>
-          <v-switch
-            v-model="filterPronoms"
-            :label="'Pronoms personnels'"
-            color="cyan darken-1"
-          ></v-switch>
-          <v-switch
-            v-model="filterPossessifs"
-            :label="'Pronoms possessifs'"
-            color="cyan darken-1"
-          ></v-switch>
-        </v-col>
-        <v-col>
-          <v-switch
-            v-model="filterVerbAux"
-            :label="'Verbes auxiliaires'"
-            color="cyan darken-1"
-          ></v-switch>
-          <v-switch
-            v-model="filterDeterminants"
-            :label="'Déterminants'"
-            color="cyan darken-1"
-          ></v-switch>
-        </v-col>
+          <v-col>
+            <v-switch
+              v-model="filterPronoms"
+              :label="'Pronoms personnels'"
+              color="cyan darken-1"
+            ></v-switch>
+            <v-switch
+              v-model="filterPossessifs"
+              :label="'Pronoms possessifs'"
+              color="cyan darken-1"
+            ></v-switch>
+          </v-col>
+          <v-col>
+            <v-switch
+              v-model="filterVerbAux"
+              :label="'Verbes auxiliaires'"
+              color="cyan darken-1"
+            ></v-switch>
+            <v-switch
+              v-model="filterDeterminants"
+              :label="'Déterminants'"
+              color="cyan darken-1"
+            ></v-switch>
+          </v-col>
         </v-row>
         <h2>Configuration</h2>
         <v-slider
@@ -56,6 +56,90 @@
           ticks="always"
           step="5"
         ></v-slider>
+        <v-row>
+        <!-- Color picker 1 -->
+        <v-text-field
+          v-model="color1.color"
+          v-mask="hexMask"
+          hide-details
+          class="input-color"
+          solo
+        >
+          <template v-slot:append>
+            <v-menu
+              v-model="color1.menu"
+              top
+              nudge-bottom="105"
+              nudge-left="16"
+              :close-on-content-click="false"
+            >
+              <template v-slot:activator="{ on }">
+                <div :style="swatchStyle1" v-on="on" />
+              </template>
+              <v-card>
+                <v-card-text class="pa-0">
+                  <v-color-picker id="color1" v-model="color1.color" flat />
+                </v-card-text>
+              </v-card>
+            </v-menu>
+          </template>
+        </v-text-field>
+        <!-- Color picker 2 -->
+        <v-text-field
+          v-model="color2.color"
+          v-mask="hexMask"
+          hide-details
+          class="input-color"
+          solo
+        >
+          <template v-slot:append>
+            <v-menu
+              v-model="color2.menu"
+              top
+              nudge-bottom="105"
+              nudge-left="16"
+              :close-on-content-click="false"
+            >
+              <template v-slot:activator="{ on }">
+                <div :style="swatchStyle2" v-on="on" />
+              </template>
+              <v-card>
+                <v-card-text class="pa-0">
+                  <v-color-picker v-model="color2.color" flat />
+                </v-card-text>
+              </v-card>
+            </v-menu>
+          </template>
+        </v-text-field>
+        <!-- Color picker 3 -->
+        <v-text-field
+          v-model="color3.color"
+          v-mask="hexMask"
+          hide-details
+          class="input-color"
+          solo
+        >
+          <template v-slot:append>
+            <v-menu
+              v-model="color3.menu"
+              top
+              nudge-bottom="105"
+              nudge-left="16"
+              :close-on-content-click="false"
+            >
+              <template v-slot:activator="{ on }">
+                <div :style="swatchStyle3" v-on="on" />
+              </template>
+              <v-card>
+                <v-card-text class="pa-0">
+                  <v-color-picker v-model="color3.color" flat />
+                </v-card-text>
+              </v-card>
+            </v-menu>
+          </template>
+        </v-text-field>
+        </v-row>
+
         <v-btn @click="generate()" color="cyan darken-1" elevation="2" dark
           >Génerer</v-btn
         >
@@ -105,11 +189,60 @@ export default {
         min: 10,
         max: 60,
       },
+      hexMask: "!#XXXXXXXX",
+      color1: {
+        color: "#002171FF",
+        menu: false,
+      },
+      color2: {
+        color: "#d50000FF",
+        menu: false,
+      },
+      color3: {
+        color: "#0d47a1FF",
+        menu: false,
+      },
     };
   },
   mounted() {},
+  computed: {
+    swatchStyle1() {
+      const { color1 } = this;
+      return {
+        backgroundColor: color1.color,
+        cursor: "pointer",
+        height: "30px",
+        width: "30px",
+        borderRadius: color1.menu ? "50%" : "4px",
+        transition: "border-radius 200ms ease-in-out",
+      };
+    },
+    swatchStyle2() {
+      const { color2 } = this;
+      return {
+        backgroundColor: color2.color,
+        cursor: "pointer",
+        height: "30px",
+        width: "30px",
+        borderRadius: color2.menu ? "50%" : "4px",
+        transition: "border-radius 200ms ease-in-out",
+      };
+    },
+    swatchStyle3() {
+      const { color3 } = this;
+      return {
+        backgroundColor: color3.color,
+        cursor: "pointer",
+        height: "30px",
+        width: "30px",
+        borderRadius: color3.menu ? "50%" : "4px",
+        transition: "border-radius 200ms ease-in-out",
+      };
+    },
+  },
   methods: {
     generate() {
+      const state = this
       const string = this.text;
       const regexNotWord = /[?():!=*,\s.&'’»«"#[\]_/\\\-;\d}{+]+/gm; // et merge les whites spaces | [^a-zA-z\séèêîûôïëàç] -> l'inverse moins performant
       const regexNomPropres = /([A-Z]{1}[\w]+)(\s)([A-Z]{1}[\w]+)/gm; // cette regex contient 3 groupes (). Le groupe 2 ($2) c'est l'espace entre prenom et nom (ex: Science Po)
@@ -260,7 +393,7 @@ export default {
         drawOutOfBound: true,
         shape: "cardioid",
         color: function () {
-          return ["#d50000", "#002171", "#0d47a1"][
+          return [state.color1.color, state.color2.color, state.color3.color][
             Math.floor(Math.random() * 3)
           ];
         },
@@ -387,5 +520,8 @@ button {
 }
 .margin-slider {
   margin-right: 10%;
+}
+.input-color {
+  width: 33%;
 }
 </style>
