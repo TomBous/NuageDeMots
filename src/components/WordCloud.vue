@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row style="large">
-      <v-col cols="4" sm="4">
+      <v-col cols="4" lg="4" sm="12">
         <h2>Texte</h2>
         <v-textarea
           solo
@@ -157,7 +157,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="8" sm="8">
+      <v-col cols="8" lg="8" sm="12">
         <div class="container column center">
           <div id="wordcloud"></div>
           <canvas id="canvas" width="1024" height="600"></canvas>
@@ -531,5 +531,6 @@ button {
 }
 .input-color {
   width: 33%;
+  min-width: 140px;
 }
 </style>
