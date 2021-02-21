@@ -2,6 +2,7 @@
   <v-container fluid>
     <v-row style="large">
       <v-col cols="4" sm="4">
+        <h2>Texte</h2>
         <v-textarea
           solo
           name="text"
@@ -56,100 +57,104 @@
           ticks="always"
           step="5"
         ></v-slider>
+        <h2>Couleurs des mots</h2>
         <v-row>
-        <!-- Color picker 1 -->
-        <v-text-field
-          v-model="color1.color"
-          v-mask="hexMask"
-          hide-details
-          class="input-color"
-          solo
-        >
-          <template v-slot:append>
-            <v-menu
-              v-model="color1.menu"
-              top
-              nudge-bottom="105"
-              nudge-left="16"
-              :close-on-content-click="false"
-            >
-              <template v-slot:activator="{ on }">
-                <div :style="swatchStyle1" v-on="on" />
-              </template>
-              <v-card>
-                <v-card-text class="pa-0">
-                  <v-color-picker id="color1" v-model="color1.color" flat />
-                </v-card-text>
-              </v-card>
-            </v-menu>
-          </template>
-        </v-text-field>
-        <!-- Color picker 2 -->
-        <v-text-field
-          v-model="color2.color"
-          v-mask="hexMask"
-          hide-details
-          class="input-color"
-          solo
-        >
-          <template v-slot:append>
-            <v-menu
-              v-model="color2.menu"
-              top
-              nudge-bottom="105"
-              nudge-left="16"
-              :close-on-content-click="false"
-            >
-              <template v-slot:activator="{ on }">
-                <div :style="swatchStyle2" v-on="on" />
-              </template>
-              <v-card>
-                <v-card-text class="pa-0">
-                  <v-color-picker v-model="color2.color" flat />
-                </v-card-text>
-              </v-card>
-            </v-menu>
-          </template>
-        </v-text-field>
-        <!-- Color picker 3 -->
-        <v-text-field
-          v-model="color3.color"
-          v-mask="hexMask"
-          hide-details
-          class="input-color"
-          solo
-        >
-          <template v-slot:append>
-            <v-menu
-              v-model="color3.menu"
-              top
-              nudge-bottom="105"
-              nudge-left="16"
-              :close-on-content-click="false"
-            >
-              <template v-slot:activator="{ on }">
-                <div :style="swatchStyle3" v-on="on" />
-              </template>
-              <v-card>
-                <v-card-text class="pa-0">
-                  <v-color-picker v-model="color3.color" flat />
-                </v-card-text>
-              </v-card>
-            </v-menu>
-          </template>
-        </v-text-field>
+          <!-- Color picker 1 -->
+          <v-text-field
+            v-model="color1.color"
+            v-mask="hexMask"
+            hide-details
+            class="input-color"
+            solo
+          >
+            <template v-slot:append>
+              <v-menu
+                v-model="color1.menu"
+                top
+                nudge-bottom="105"
+                nudge-left="16"
+                :close-on-content-click="false"
+              >
+                <template v-slot:activator="{ on }">
+                  <div :style="swatchStyle1" v-on="on" />
+                </template>
+                <v-card>
+                  <v-card-text class="pa-0">
+                    <v-color-picker id="color1" v-model="color1.color" flat />
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+            </template>
+          </v-text-field>
+          <!-- Color picker 2 -->
+          <v-text-field
+            v-model="color2.color"
+            v-mask="hexMask"
+            hide-details
+            class="input-color"
+            solo
+          >
+            <template v-slot:append>
+              <v-menu
+                v-model="color2.menu"
+                top
+                nudge-bottom="105"
+                nudge-left="16"
+                :close-on-content-click="false"
+              >
+                <template v-slot:activator="{ on }">
+                  <div :style="swatchStyle2" v-on="on" />
+                </template>
+                <v-card>
+                  <v-card-text class="pa-0">
+                    <v-color-picker v-model="color2.color" flat />
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+            </template>
+          </v-text-field>
+          <!-- Color picker 3 -->
+          <v-text-field
+            v-model="color3.color"
+            v-mask="hexMask"
+            hide-details
+            class="input-color"
+            solo
+          >
+            <template v-slot:append>
+              <v-menu
+                v-model="color3.menu"
+                top
+                nudge-bottom="105"
+                nudge-left="16"
+                :close-on-content-click="false"
+              >
+                <template v-slot:activator="{ on }">
+                  <div :style="swatchStyle3" v-on="on" />
+                </template>
+                <v-card>
+                  <v-card-text class="pa-0">
+                    <v-color-picker v-model="color3.color" flat />
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+            </template>
+          </v-text-field>
         </v-row>
 
-        <v-btn @click="generate()" color="cyan darken-1" elevation="2" dark
-          >Génerer</v-btn
-        >
-        <v-btn
-          @click="downloadCanvas()"
-          color="cyan darken-1"
-          elevation="2"
-          dark
-          >Enregistrer</v-btn
-        >
+        <v-row class="justify-space-around">
+            <v-btn @click="generate()" color="cyan darken-1" elevation="2" dark class="m-x-auto"
+              >Génerer</v-btn
+            >
+            <v-btn
+              @click="downloadCanvas()"
+              color="cyan darken-1"
+              elevation="2"
+              dark
+              class="m-x-auto"
+              >Enregistrer</v-btn
+            >
+        </v-row>
       </v-col>
 
       <v-col cols="8" sm="8">
@@ -242,7 +247,7 @@ export default {
   },
   methods: {
     generate() {
-      const state = this
+      const state = this;
       const string = this.text;
       const regexNotWord = /[?():!=*,\s.&'’»«"#[\]_/\\\-;\d}{+]+/gm; // et merge les whites spaces | [^a-zA-z\séèêîûôïëàç] -> l'inverse moins performant
       const regexNomPropres = /([A-Z]{1}[\w]+)(\s)([A-Z]{1}[\w]+)/gm; // cette regex contient 3 groupes (). Le groupe 2 ($2) c'est l'espace entre prenom et nom (ex: Science Po)
@@ -480,6 +485,9 @@ export default {
 }
 h3 {
   margin: 40px 0 0;
+}
+h2 {
+  margin: 20px 0;
 }
 ul {
   list-style-type: none;
